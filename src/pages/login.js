@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
 import AppIcon from '../images/icon.jpg';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+// import from material-ui
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = {
     form: {
@@ -22,7 +26,16 @@ const styles = {
         margin: '10px auto 10px auto'
     },
     button: {
-        marginTop: 20
+        marginTop: 20,
+        position: 'relative'
+    },
+    customError: {
+        color: 'red',
+        fontSize: '0.8rem',
+        marginTop: 10
+    },
+    progress: {
+        position: 'absolute'
     }
 };
 
@@ -103,7 +116,19 @@ class login extends Component {
                             value={this.state.password}
                             onChange={this.handleChange}
                             fullWidth/>
-                        <Button type="submit" variant="contained" color="primary" className={classes.button}>Login</Button>
+                        {errors.general && (
+                            <Typography variant="body2" className={classes.customError}>
+                                {errors.general}
+                            </Typography>
+                        )}
+                        <Button type="submit" variant="contained" color="primary" className={classes.button}
+                        disabled={loading}
+                        >Login
+                        {loading && (
+                            <CircularProgress size={30} className={classes.progress}/>
+                        )}
+                        </Button>
+                        <br/><small>Don't have an account? Sign up <Link to="/signup">here.</Link></small>
                     </form>
                 </Grid>
                 <Grid item sm/>
