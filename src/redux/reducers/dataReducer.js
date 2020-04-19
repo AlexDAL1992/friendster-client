@@ -38,6 +38,9 @@ export default function (state = initialState, action) {
         (scream) => scream.screamID === action.payload.screamID
       );
       state.screams[index] = action.payload;
+      if(state.scream.screamID === action.payload.screamID){
+        state.scream = action.payload;
+      }
       return {
         ...state
       };
