@@ -5,7 +5,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import PropTypes from "prop-types";
 import MyButton from "../util/MyButton";
-import DeleteScream from './DeleteScream';
+import DeleteScream from "./DeleteScream";
+import ScreamDialog from "./ScreamDialog";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -42,7 +43,7 @@ const styles = {
   },
   image: {
     margin: "20px auto 20px auto",
-    minWidth: 200
+    minWidth: 200,
   },
   pageTitle: {
     margin: "10px auto 10px auto",
@@ -65,12 +66,12 @@ const styles = {
   },
   card: {
     display: "flex",
-    marginBottom: 20
+    marginBottom: 20,
   },
   content: {
     padding: 25,
-    objectFit: "cover"
-  }
+    objectFit: "cover",
+  },
 };
 
 class Scream extends Component {
@@ -78,7 +79,7 @@ class Scream extends Component {
     if (
       this.props.user.like &&
       this.props.user.likes.find(
-        like => like.screamID === this.props.scream.screamID
+        (like) => like.screamID === this.props.scream.screamID
       )
     ) {
       return true;
@@ -106,9 +107,12 @@ class Scream extends Component {
         userHandle,
         screamID,
         likeCount,
-        commentCount
+        commentCount,
       },
-      user: { authenticated, credentials: { handle } }
+      user: {
+        authenticated,
+        credentials: { handle },
+      },
     } = this.props;
 
     const likeButton = !authenticated ? (
@@ -126,10 +130,11 @@ class Scream extends Component {
         <FavoriteBorder color="primary" />
       </MyButton>
     );
-    
-    const deleteButton = authenticated && userHandle === handle ? (
-      <DeleteScream screamID={screamID}/>
-    ) : null;
+
+    const deleteButton =
+      authenticated && userHandle === handle ? (
+        <DeleteScream screamID={screamID} />
+      ) : null;
 
     return (
       <Card className={classes.card}>
@@ -147,7 +152,7 @@ class Scream extends Component {
           >
             {userHandle}
           </Typography>
-          {deleteButton} 
+          {deleteButton}
           <Typography variant="body2" color="textSecondary">
             {dayjs(createdAt).fromNow()}
           </Typography>
@@ -158,6 +163,7 @@ class Scream extends Component {
             <ChatIcon color="primary" />
           </MyButton>
           <span>{commentCount} comments</span>
+          <ScreamDialog screamID={screamID} userHandle={userHandle}/>
         </CardContent>
       </Card>
     );
@@ -169,16 +175,16 @@ Scream.propTypes = {
   unlikeScream: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   scream: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  user: state.user
+const mapStateToProps = (state) => ({
+  user: state.user,
 });
 
 const mapActionsToProps = {
   likeScream,
-  unlikeScream
+  unlikeScream,
 };
 
 export default connect(
