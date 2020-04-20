@@ -11,6 +11,10 @@ class user extends Component {
   state = { profile: null };
   componentDidMount() {
     const handle = this.props.match.params.handle;
+    const screamID = this.props.match.params.screamID;
+
+    if (screamID) this.setState({ screamIDParam: screamID });
+
     this.props.getUserData(handle);
     axios
       .get(`/user/${handle}`)
@@ -23,12 +27,19 @@ class user extends Component {
   }
   render() {
     const { screams, loading } = this.props.data;
+    const { screamIDParam } = this.state;
     const ScreamsMarkup = loading ? (
       <p>Loading data ...</p>
     ) : screams === null ? (
       <p>No post from this user.</p>
-    ) : (
+    ) : !screamIDParam ? (
       screams.map((scream) => <Scream key={scream.screamID} scream={scream} />)
+    ) : (
+      screams.map((scream) => {
+        if (scream.screamID !== screamIDParam)
+          return <Scream key={scream.screamID} scream={scream} />;
+        else return <Scream key={scream.screamID} scream={scream} openDialog />;
+      })
     );
     return (
       <Grid container spacing={16}>
